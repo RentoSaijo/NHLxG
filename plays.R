@@ -49,7 +49,7 @@ get_espn_all_pbps <- function(events) {
         x=pbp$`coordinate.x`,
         y=pbp$`coordinate.y`,
         team=pbp$`team.$ref`,
-        strength=encode_espn_strength(pbp$`strength.text`),
+        strength=pbp$`strength.text`,
         shot=pbp$`shotInfo.text`
       )
     })
@@ -57,6 +57,9 @@ get_espn_all_pbps <- function(events) {
 
 # Get ESPN play-by-plays.
 espn_pbps <- get_espn_all_pbps(events)
+espn_pbps_copy <- espn_pbps
+espn_pbps_copy <- espn_pbps_copy %>% 
+  select(-participants)
 
 # Export `espn_pbps`.
-write.csv(espn_pbps, 'data/espn_pbps.csv', row.names=FALSE)
+write.csv(espn_pbps_copy, 'data/espn_pbps_no_participants.csv', row.names=FALSE)
