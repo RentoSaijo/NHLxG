@@ -46,5 +46,5 @@ all_games <- get_games() %>%
 all_events <- get_espn_all_events(all_seasons)
 
 # Export `all_games` and `all_events`.
-write.csv(all_games, 'data/games.csv')
-write.csv(all_events, 'data/events.csv')
+write.csv(all_games, 'data/games.csv', row.names=FALSE)
+write.csv(all_events, 'data/events.csv', row.names=FALSE)
