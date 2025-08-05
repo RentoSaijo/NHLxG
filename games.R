@@ -1,10 +1,10 @@
-# Load necessary libraries.
+# Load libraries.
 suppressMessages(library(tidyverse))
 library(nhlscraper)
 library(lubridate)
 library(stringr)
 
-# Set helper functions.
+# Set helpers.
 to_espn_date <- function(date) {
   date <- ymd_hms(date, tz='UTC')
   as.integer(format(date, '%Y%m%d'))
@@ -46,5 +46,5 @@ all_games <- get_games() %>%
 all_events <- get_espn_all_events(all_seasons)
 
 # Export `all_games` and `all_events`.
-write.csv(all_games, 'data/all_games.csv')
-write.csv(all_events, 'data/all_events.csv')
+write.csv(all_games, 'data/games.csv')
+write.csv(all_events, 'data/events.csv')
