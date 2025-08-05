@@ -44,3 +44,7 @@ all_games <- get_games() %>%
   filter(season>=20072008) %>% 
   filter(season<=20242025)
 all_events <- get_espn_all_events(all_seasons)
+
+# Export `all_games` and `all_events`.
+write.csv(all_games, 'data/all_games.csv')
+write.csv(all_events, 'data/all_events.csv')
