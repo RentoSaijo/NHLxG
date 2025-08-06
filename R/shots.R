@@ -26,6 +26,16 @@ encode_shot_type <- function(text) {
     TRUE~'other'
   )
 }
+encode_espn_strength <- function(strength) {
+  case_when(
+    strength=='Even Strength'~'ES',
+    strength=='Power Play'~'PP',
+    strength=='Shorthanded'~'SH',
+    strength=='Empty Net'~'EN',
+    strength=='Penalty Shot'~'PS',
+    TRUE~NA_character_
+  )
+}
 
 # Read data.
 espn_pbps <- readr::read_csv(
@@ -43,7 +53,8 @@ espn_shots <- espn_pbps %>%
   select(-type) %>% 
   mutate(type=encode_shot_type(text)) %>% 
   filter(type!='other') %>% 
-  filter(!is.na(x) & !is.na(y))
+  filter(!is.na(x) & !is.na(y)) %>% 
+  mutate(strength=encode_shot_type(strength))
 
 # Export `espn_shots`.
 write_csv(espn_shots, 'data/espn_shots.csv')
