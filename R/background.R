@@ -1,7 +1,7 @@
 # Load libraries.
 suppressMessages(library(tidyverse))
+suppressMessages(library(jsonlite))
 library(nhlscraper)
-library(jsonlite)
 
 # Read data.
 games <- read.csv('data/games.csv')
@@ -64,3 +64,5 @@ flatten_espn_participants <- function(espn_pbps) {
 
 # Get ESPN play-by-plays.
 espn_pbps <- get_espn_all_pbps(events)
+espn_pbps_copy <- espn_pbps
+espn_pbps_flat <- flatten_espn_participants(espn_pbps_copy)
