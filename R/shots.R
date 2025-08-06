@@ -21,6 +21,8 @@ encode_shot_type <- function(text) {
     grepl('Batted', text)~'bat',
     grepl('Poke', text)~'poke',
     grepl('Deflected', text)~'deflect',
+    grepl('Between Legs', text)~'between',
+    grepl('Cradle', text)~'cradle',
     TRUE~'other'
   )
 }
@@ -35,14 +37,12 @@ espn_pbps <- readr::read_csv(
 )
 
 # Only leave shots.
-test_shots <- test_flat %>% 
-  filter(type.text=='Shot' | type.text=='Goal') %>% 
-  mutate(goal=play_type_to_goal_boolean(type.text)) %>% 
-  select(-type.text) %>% 
-  mutate(type=encode_shot_type(text))
-
 espn_shots <- espn_pbps %>% 
   filter(type=='Shot' | type=='Goal') %>% 
   mutate(goal=play_type_to_goal_boolean(type)) %>% 
   select(-type) %>% 
-  mutate(type=encode_shot_type(text))
+  mutate(type=encode_shot_type(text)) %>% 
+  filter(type!='other')
+
+# Export `espn_shots`.
+write_csv(espn_shots, 'data/espn_shots.csv')
