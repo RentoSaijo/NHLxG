@@ -42,7 +42,8 @@ espn_shots <- espn_pbps %>%
   mutate(goal=play_type_to_goal_boolean(type)) %>% 
   select(-type) %>% 
   mutate(type=encode_shot_type(text)) %>% 
-  filter(type!='other')
+  filter(type!='other') %>% 
+  filter(!is.na(x) & !is.na(y))
 
 # Export `espn_shots`.
 write_csv(espn_shots, 'data/espn_shots.csv')
