@@ -1,19 +1,13 @@
-# Load library.
-library(tidyverse)
+# Load libraries.
+suppressMessages(library(tidyverse))
+library(nhlscraper)
+library(jsonlite)
 
 # Read data.
 games <- read.csv('data/games.csv')
 events <- read.csv('data/events.csv')
 
 # Set helpers.
-encode_espn_strength <- function(strength) {
-  case_when(
-    strength=='Even Strength'~'ES',
-    strength=='Power Play'~'PP',
-    strength=='Shorthanded'~'SH',
-    TRUE~NA_character_
-  )
-}
 get_espn_all_pbps <- function(events) {
   events %>% 
     pmap_dfr(function(season, id) {
@@ -57,9 +51,8 @@ get_espn_all_pbps <- function(events) {
 
 # Get ESPN play-by-plays.
 espn_pbps <- get_espn_all_pbps(events)
-espn_pbps_copy <- espn_pbps
-espn_pbps_copy <- espn_pbps_copy %>% 
-  select(-participants)
+
+write.csv(espn_pbps_flat, 'data/espn_pbps.csv', row.names = FALSE)
 
 # Export `espn_pbps`.
 write.csv(espn_pbps_copy, 'data/espn_pbps_no_participants.csv', row.names=FALSE)

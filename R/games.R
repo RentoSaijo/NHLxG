@@ -29,19 +29,19 @@ get_espn_all_events <- function(all_seasons) {
     })
 }
 
-# Get all seasons from 2007-2008 to 2024-2025.
+# Get all seasons from 2022-2023 to 2024-2025.
 all_seasons <- get_seasons() %>% 
   mutate(
     espn_start_date=to_espn_date(startDate),
     espn_end_date=to_espn_date(endDate)
   ) %>% 
-  filter(id>=20072008) %>% 
+  filter(id>=20222023) %>% 
   filter(id<=20242025) %>% 
   arrange(id)
 
-# Get all games and events from 2007-2008 to 2024-2025.
+# Get all games and events from 2022-2023 to 2024-2025.
 all_games <- get_games() %>% 
-  filter(season>=20072008) %>% 
+  filter(season>=20222023) %>% 
   filter(season<=20242025)
 all_events <- get_espn_all_events(all_seasons)
 
