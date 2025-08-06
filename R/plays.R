@@ -1,7 +1,7 @@
 # Load libraries.
 suppressMessages(library(tidyverse))
+suppressMessages(library(jsonlite))
 library(nhlscraper)
-library(jsonlite)
 
 # Read data.
 games <- read.csv('data/games.csv')
@@ -17,6 +17,8 @@ get_espn_all_pbps <- function(events) {
           season=integer(), 
           event=integer(),
           id=character(),
+          sequence=character(),
+          text=character(),
           away_score=integer(),
           home_score=integer(),
           participants=list(),
@@ -26,14 +28,15 @@ get_espn_all_pbps <- function(events) {
           x=integer(),
           y=integer(),
           team=character(),
-          strength=character(),
-          shot=character()
+          strength=character()
         ))
       }
       tibble(
         season=season,
         event=id,
         id=pbp$id,
+        sequence=pbp$sequenceNumber,
+        text=pbp$text,
         away_score=pbp$awayScore,
         home_score=pbp$homeScore,
         participants=pbp$participants,
@@ -43,16 +46,28 @@ get_espn_all_pbps <- function(events) {
         x=pbp$`coordinate.x`,
         y=pbp$`coordinate.y`,
         team=pbp$`team.$ref`,
-        strength=pbp$`strength.text`,
-        shot=pbp$`shotInfo.text`
+        strength=pbp$`strength.text`
       )
     })
+}
+flatten_espn_participants <- function(espn_pbps) {
+  espn_pbps %>% 
+  mutate(
+    participants=map_chr(participants, function(x) {
+      if (length(x)==0) {
+        return(NA_character_)
+      }
+      toJSON(x, auto_unbox=TRUE)
+    })
+  )
 }
 
 # Get ESPN play-by-plays.
 espn_pbps <- get_espn_all_pbps(events)
-
-write.csv(espn_pbps_flat, 'data/espn_pbps.csv', row.names = FALSE)
+espn_pbps_flat <- flatten_espn_participants(espn_pbps)
 
 # Export `espn_pbps`.
-write.csv(espn_pbps_copy, 'data/espn_pbps_no_participants.csv', row.names=FALSE)
+espn_pbps <- espn_pbps
+espn_pbps <- espn_pbps %>% 
+  select(-participants)
+write.csv(espn_pbps_copy, 'data/espn_pbps.csv', row.names=FALSE)
