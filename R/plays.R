@@ -67,4 +67,4 @@ espn_pbps <- get_espn_all_pbps(events)
 espn_pbps_flat <- flatten_espn_participants(espn_pbps)
 
 # Export `espn_pbps`.
-write.csv(espn_pbps_flat, 'data/espn_pbps.csv', row.names=FALSE)
+write_csv(espn_pbps_flat, 'data/espn_pbps.csv')
