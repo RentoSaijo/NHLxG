@@ -54,7 +54,7 @@ espn_shots <- espn_pbps %>%
   mutate(type=encode_shot_type(text)) %>% 
   filter(type!='other') %>% 
   filter(!is.na(x) & !is.na(y)) %>% 
-  mutate(strength=encode_shot_type(strength))
+  mutate(strength=encode_espn_strength(strength))
 
 # Export `espn_shots`.
 write_csv(espn_shots, 'data/espn_shots.csv')
