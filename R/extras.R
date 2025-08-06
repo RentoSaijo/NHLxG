@@ -73,5 +73,3 @@ espn_shots_extra <- espn_shots %>%
     team=encode_espn_team(home_team, team)
   ) %>% 
   select(-participants, -text, -info, -home_team)
-
-espn_shots_extra_copy <- espn_shots_extra
