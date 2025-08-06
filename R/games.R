@@ -9,7 +9,7 @@ to_espn_date <- function(date) {
   date <- ymd_hms(date, tz='UTC')
   as.integer(format(date, '%Y%m%d'))
 }
-get_espn_event_id <- function(href) {
+extract_espn_event_id <- function(href) {
   event <- str_extract(href, '(?<=/events/)\\d+')
   as.integer(event)
 }
@@ -25,7 +25,7 @@ get_espn_all_events <- function(all_seasons) {
       if (nrow(events)==0) {
         return(tibble(season=integer(), id=integer()))
       }
-      tibble(season=season, id=get_espn_event_id(events$`$ref`))
+      tibble(season=season, id=extract_espn_event_id(events$`$ref`))
     })
 }
 
