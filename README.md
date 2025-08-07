@@ -4,7 +4,7 @@
 
 This is a work-in-progress expected-goals (xG) model for the NHL. The logistic 
 regression is trained and tested on ~160,000 shots, from the 2023-2024 and 
-2024-2025 seasons, downloaded via [`nhlscraper`](https://rentosaijo.github.io/nhlscraper/).
+2024-2025 seasons, downloaded via [nhlscraper](https://rentosaijo.github.io/nhlscraper/).
 
 ### Process
 
@@ -39,13 +39,13 @@ be written to a `CSV`, which can be downloaded in `data/espn_pbps.csv`.
 `tidyverse`, I quickly filtered out all the other plays (although, in future 
 more-complex models, I want to include some, if not, all the other plays as 
 exploring sequential patterns may improve the model), encoded shot `type` using
-`grepl()` from base R, and filtered out 2 rows that were somehow missing `x` and 
+`grepl()` from base `R`, and filtered out 2 rows that were somehow missing `x` and 
 `y` coordinates. The complete `CSV` can be downloaded in `data/espn_shots.csv`.
 5. Retrieve extra information on each shot. Based on `participants` and `team`, 
 I wanted to grab the following extra information: shooter's `height`, `weight`, 
 `hand` (handedness), `position`, and whether his `team` was home, away, or other 
 (neutral site). I used `get_espn_athlete()` and `get_espn_event()` from 
-`nhlscraper` and `case_when()` (switch-case) from base R to handle these. The 
+`nhlscraper` and `case_when()` (switch-case) from base `R` to handle these. The 
 complete `CSV` can be downloaded in `data/espn_shots_extra.csv`.
 
 *I highly recommend you to download the `CSV` files instead of running the `R` 
