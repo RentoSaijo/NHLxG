@@ -73,10 +73,10 @@ for (start in seq(1, n, by=chunk_size)) {
         remove=FALSE
       ) %>%
       mutate(
-        height=as.integer(str_remove(height, "^height=")),
-        weight=as.integer(str_remove(weight, "^weight=")),
-        hand=str_remove(hand, "^hand="),
-        position=str_remove(position, "^position="),
+        height=as.integer(str_remove(height, '^height=')),
+        weight=as.integer(str_remove(weight, '^weight=')),
+        hand=str_remove(hand, '^hand='),
+        position=str_remove(position, '^position='),
         team=map_int(team, extract_espn_team_id),
         home_team=map_int(
           event, 
@@ -86,7 +86,7 @@ for (start in seq(1, n, by=chunk_size)) {
       ) %>%
       select(-participants, -text, -info, -home_team)
   }, error=function(e) {
-    warning("Chunk ", start, "-", end, " failed: ", e$message)
+    warning('Chunk ', start, '-', end, ' failed: ', e$message)
     NULL
   })
   if (!is.null(chunk_result)) {
