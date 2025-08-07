@@ -28,16 +28,25 @@ seasons worth of play-by-plays contain ~160000 shots.
 2. Retrieve a list of all the Event IDs from the 2023-2024 to 2024-2025 
 seasons. I used `get_espn_events()` from `nhlscraper` and some `stringr` 
 extraction to retrieve them.
-3. Retrieve a data frame of all the plays from all the above games. I used 
+3. Retrieve a `data.frame` of all the plays from all the above games. I used 
 `get_espn_event_play_by_play()` from `nhlscraper` and grabbed what I determined 
 to potentially be the useful information from each play: `sequence`, `text`, 
 `away_score`, `home_score`, `participants`, `type`, `period`, `clock`, `x` and 
 `y` coordinates, team, and `strength` state. Since `participants` were all 
 `list` classes, I needed to flatten them out using `jsonlite` so that they can 
-be written to a `CSV`.
-4. Filter only play `type`s of `Shot`s or `Goal`s. With some help from 
+be written to a `CSV`, which can be downloaded in `data/espn_pbps.csv`.
+4. Filter to leave only `Shot` and `Goal` play `type`. With some help from 
 `tidyverse`, I quickly filtered out all the other plays (although, in future 
 more-complex models, I want to include some, if not, all the other plays as 
-exploring sequential patterns may improve the model), encoded shot `type`s using
-`grepl()`, and filtered out 2 rows that were somehow missing `x` and `y` 
-coordinates.
+exploring sequential patterns may improve the model), encoded shot `type` using
+`grepl()` from base R, and filtered out 2 rows that were somehow missing `x` and 
+`y` coordinates. The complete `CSV` can be downloaded in `data/espn_shots.csv`.
+5. Retrieve extra information on each shot. Based on `participants` and `team`, 
+I wanted to grab the following extra information: shooter's `height`, `weight`, 
+`hand` (handedness), `position`, and whether his `team` was home, away, or other 
+(neutral site). I used `get_espn_athlete()` and `get_espn_event()` from 
+`nhlscraper` and `case_when()` (switch-case) from base R to handle these. The 
+complete `CSV` can be downloaded in `data/espn_shots_extra.csv`.
+
+*I highly recommend you to download the `CSV` files instead of running the `R` 
+scripts as some of these data mining processes take a long time (12+ hours)!
