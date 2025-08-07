@@ -49,27 +49,47 @@ encode_espn_team <- function(home_team, team) {
 }
 
 # Get athlete and team information.
-espn_shots_extra <- espn_shots %>% 
-  mutate(shooter=map_int(participants, extract_espn_athlete)) %>%
-  mutate(
-    season=season%%10000,
-    info=map2_chr(shooter, season, get_espn_athlete_info)
-  ) %>% 
-  separate(
-    col=info,
-    into=c('height', 'weight', 'hand', 'position'),
-    sep=', ',
-    remove=FALSE
-  ) %>%
-  mutate(
-    height=as.integer(str_remove(height, '^height=')),
-    weight=as.integer(str_remove(weight, '^weight=')),
-    hand=str_remove(hand, '^hand='),
-    position=str_remove(position, '^position=')
-  ) %>% 
-  mutate(
-    team=map_int(team, extract_espn_team_id),
-    home_team=map_int(event, get_espn_event_home_team),
-    team=encode_espn_team(home_team, team)
-  ) %>% 
-  select(-participants, -text, -info, -home_team)
+chunk_size <- 100
+n <- nrow(espn_shots)
+outfile <- 'data/espn_shots_extra.csv'
+if (file.exists(outfile)) {
+  file.remove(outfile)
+}
+for (start in seq(1, n, by=chunk_size)) {
+  end <- min(start + chunk_size-1, n)
+  message("Processing rows ", start, "–", end, " …")
+  df_chunk <- espn_shots[start:end, ]
+  chunk_result <- tryCatch({
+    df_chunk %>%
+      mutate(
+        shooter=map_int(participants, extract_espn_athlete),
+        season=season%%10000,
+        info=map2_chr(shooter, season, get_espn_athlete_info)
+      ) %>%
+      separate(
+        info, 
+        into=c('height', 'weight', 'hand', 'position'),
+        sep = ', ', 
+        remove=FALSE
+      ) %>%
+      mutate(
+        height=as.integer(str_remove(height, "^height=")),
+        weight=as.integer(str_remove(weight, "^weight=")),
+        hand=str_remove(hand, "^hand="),
+        position=str_remove(position, "^position="),
+        team=map_int(team, extract_espn_team_id),
+        home_team=map_int(
+          event, 
+          possibly(get_espn_event_home_team, NA_integer_)
+        ),
+        team=encode_espn_team(home_team, team)
+      ) %>%
+      select(-participants, -text, -info, -home_team)
+  }, error=function(e) {
+    warning("Chunk ", start, "-", end, " failed: ", e$message)
+    NULL
+  })
+  if (!is.null(chunk_result)) {
+    write_csv(chunk_result, outfile, append=file.exists(outfile))
+  }
+}
