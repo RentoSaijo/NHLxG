@@ -3,8 +3,8 @@
 ### Overview
 
 This is a work-in-progress expected-goals (xG) model for the NHL. The logistic 
-regression is trained and tested on ~160,000 shots from the 2023-2024 and 
-2024-2025 seasons. More model details to come.
+regression is trained and tested on ~160,000 shots, from the 2023-2024 and 
+2024-2025 seasons, downloaded via [`nhlscraper`](https://rentosaijo.github.io/nhlscraper/).
 
 ### Process
 
