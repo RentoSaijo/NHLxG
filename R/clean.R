@@ -18,11 +18,14 @@ calculate_distance <- function(x, y) {
   sqrt(dx^2 + dy^2)
 }
 calculate_angle <- function(x, y) {
-  vx <- x-89
-  vy <- y-0
-  cos_theta <- -(vx) / sqrt(vx^2 + vy^2)
+  vx <- x - 89
+  vy <- y
+  r  <- sqrt(vx^2 + vy^2)
+  cos_theta <- -vx / ifelse(r==0, 1, r)
   cos_theta <- pmin(pmax(cos_theta, -1), 1)
-  acos(cos_theta) * 180/pi
+  angle <- acos(cos_theta) * 180/pi
+  angle[r==0] <- 0
+  angle
 }
 calculate_dG <- function(home_score, away_score, team) {
   case_when(
