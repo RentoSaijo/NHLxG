@@ -67,8 +67,10 @@ espn_shots_1 <- espn_shots_extra %>%
 
 # Split into train and test sets.
 split_1 <- rsample::group_initial_split(espn_shots_1, group=event, prop=0.8)
-train_1 <- training(split_1)
-test_1  <- testing(split_1)
+train_1 <- training(split_1) %>% 
+  select(-event)
+test_1  <- testing(split_1) %>% 
+  select(-event)
 
 # Export `train_1` and `test_1`.
 write_csv(train_1, 'data/model/train_1.csv')
