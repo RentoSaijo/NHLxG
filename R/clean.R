@@ -44,11 +44,7 @@ espn_shots_1 <- espn_shots_extra %>%
     distance=calculate_distance(x, y),
     angle=calculate_angle(x, y),
     dG=calculate_dG(home_score, away_score, team),
-    time=calculate_time(period, clock),
-    type=as.factor(type),
-    hand=as.factor(hand),
-    strength=as.factor(strength),
-    team=as.factor(team)
+    time=calculate_time(period, clock)
   ) %>% 
   select(
     event,
