@@ -37,8 +37,23 @@ calculate_dG <- function(home_score, away_score, team) {
 calculate_time <- function(period, clock) {
   (period-1)*1200 + (1200-clock)
 }
+simplify_type <- function(type) {
+  case_when(
+    type=='backhand'~'B',
+    type=='slap'~'S',
+    type=='snap'~'N',
+    type=='wrist'~'W',
+    TRUE~'O'
+  )
+}
+simplify_strength <- function(strength) {
+  case_when(
+    strength=='PP'~'P',
+    TRUE~'O'
+  )
+}
 
-# Calculate shot distance and angle, goal-differential, and time for model 1.
+# Clean for models.
 espn_shots_1 <- espn_shots_extra %>% 
   filter(team!='O') %>% 
   filter(strength!='EN' & strength!='PS') %>% 
@@ -64,14 +79,46 @@ espn_shots_1 <- espn_shots_extra %>%
     dG,
     team
   )
+espn_shots_2 <- espn_shots_extra %>% 
+  filter(team!='O') %>% 
+  filter(strength!='EN' & strength!='PS') %>% 
+  mutate(
+    x=abs(x),
+    type=simplify_type(type),
+    strength=simplify_strength(strength),
+    distance=calculate_distance(x, y),
+    angle=calculate_angle(x, y),
+    dG=calculate_dG(home_score, away_score, team),
+    time=calculate_time(period, clock)
+  ) %>% 
+  filter(abs(dG)<=3) %>% 
+  select(
+    event,
+    goal,
+    distance,
+    angle,
+    type,
+    height,
+    time,
+    strength,
+    dG,
+    team
+  )
 
 # Split into train and test sets.
-split_1 <- rsample::group_initial_split(espn_shots_1, group=event, prop=0.8)
+split_1 <- group_initial_split(espn_shots_1, group=event, prop=0.8)
 train_1 <- training(split_1) %>% 
   select(-event)
-test_1  <- testing(split_1) %>% 
+test_1 <- testing(split_1) %>% 
+  select(-event)
+split_2 <- group_initial_split(espn_shots_2, group=event, prop=0.8)
+train_2 <- training(split_2) %>% 
+  select(-event)
+test_2 <- testing(split_2) %>% 
   select(-event)
 
-# Export `train_1` and `test_1`.
+# Export train and test sets.
 write_csv(train_1, 'data/model/train_1.csv')
 write_csv(test_1, 'data/model/test_1.csv')
+write_csv(train_2, 'data/model/train_2.csv')
+write_csv(test_2, 'data/model/test_2.csv')
