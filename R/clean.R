@@ -34,6 +34,7 @@ calculate_dG <- function(home_score, away_score, team) {
 # Calculate shot distance and angle and goal-differential for model 1
 espn_shots_1 <- espn_shots_extra %>% 
   filter(team!='O') %>% 
+  filter(strength!='EN' & strength!='PS') %>% 
   mutate(
     x=abs(x),
     distance=calculate_distance(x, y),
