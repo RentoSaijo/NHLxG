@@ -49,6 +49,7 @@ espn_shots_1 <- espn_shots_extra %>%
     dG=calculate_dG(home_score, away_score, team),
     time=calculate_time(period, clock)
   ) %>% 
+  filter(abs(dG)<=3) %>% 
   select(
     event,
     goal,
